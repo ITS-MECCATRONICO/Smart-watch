@@ -34,7 +34,7 @@ void Setup_BLE(){
 
   ble.verbose(false);  // debug info is a little annoying after this point!
 
-  // Wait for connection 
+  // Wait for connection
   while (! ble.isConnected()) {
       delay(500);
   }
@@ -55,16 +55,11 @@ void Setup_BLE(){
 
   Serial.println("******************************");
 }
-void BLE_send()
-{ 
-  // Check for user input
-  if (QS == true)
-  {
+void BLE_send(int b_data)
+{
     // Send input data to host via Bluefruit
-    ble.println(BPM);
-    QS = false; 
-  }
-
-  
+    Serial.println(b_data);
+    ble.println(b_data);
+    QS = false;
+    
 }
-

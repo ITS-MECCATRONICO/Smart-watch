@@ -8,7 +8,7 @@ volatile int thresh = 530;                // used to find instant moment of hear
 volatile int amp = 0;                   // used to hold amplitude of pulse waveform, seeded
 volatile boolean firstBeat = true;        // used to seed rate array so we startup with reasonable BPM
 volatile boolean secondBeat = false;      // used to seed rate array so we startup with reasonable BPM
-  
+
 void pulse_sensor(){
   cli();                                      // disable interrupts while we do this
   Signal = analogRead(pulsePin);              // read the Pulse Sensor
@@ -48,7 +48,7 @@ void pulse_sensor(){
         sei();                               // enable interrupts again
         return;                              // IBI value is unreliable so discard it
       }
-      
+
       // keep a running total of the last 10 IBI values
       word runningTotal = 0;                  // clear the runningTotal variable
 
@@ -59,7 +59,7 @@ void pulse_sensor(){
 
       rate[9] = IBI;                          // add the latest IBI to the rate array
       runningTotal += rate[9];                // add the latest IBI to runningTotal
-      runningTotal /= 10;                     // average the last 10 IBI values     
+      runningTotal /= 10;                     // average the last 10 IBI values
       BPM = 60000/runningTotal;               // how many beats can fit into a minute? that's BPM!
       //BLE_send();
       Save_BPM();
