@@ -61,5 +61,5 @@ void BLE_send(int b_data)
     Serial.println(b_data);
     ble.println(b_data);
     QS = false;
-    
+
 }
