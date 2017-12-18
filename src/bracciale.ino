@@ -85,8 +85,6 @@ void loop() {
   //Serial.print("\t"); Serial.print(X); Serial.print("\t"); Serial.print(Y); Serial.print("\t"); Serial.print(Z); Serial.print("\t");
   //Serial.print("\t"); Serial.print(objt); Serial.print("\t"); Serial.print(diet); Serial.print("\t")
 
-  //BLE_send();
-
   // Echo received data
   while ( ble.available() )
   {

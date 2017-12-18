@@ -7,6 +7,6 @@ void Battery()
   float voltage = sensorValue * (5.0 / 1023.0);
 
   // print out the value you read:
-  ble.print("BATT");
-  ble.println(sensorValue);
+  ble.print("BATT ");
+  ble.println(voltage);
 }

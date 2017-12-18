@@ -1,21 +1,21 @@
 
-void Search_MMA8451(){  
+void Search_MMA8451(){
   Serial.println("Adafruit MMA8451 test!");
   if (!mma.begin()) {
     Serial.println("Couldnt start");
     while (1);
   }
-  Serial.println("MMA8451 found!");
-  
+  Serial.println("MMA8451 OK!");
+
   mma.setRange(MMA8451_RANGE_2_G);
-  Serial.print("Range = "); 
-  Serial.print(2 << mma.getRange());  
+  Serial.print("Range = ");
+  Serial.print(2 << mma.getRange());
   Serial.println("G");
 }
 
 void Event_MMA8451(){
   // Get a new sensor event
-  /*sensors_event_t event; 
+  /*sensors_event_t event;
   mma.getEvent(&event);
   // Display the results (acceleration is measured in m/s^2)
   Serial.print("X: \t"); Serial.print(event.acceleration.x); Serial.print("\t");
@@ -29,5 +29,3 @@ void Event_MMA8451(){
   Y = mma.y;
   Z = mma.z;
 }
-
-

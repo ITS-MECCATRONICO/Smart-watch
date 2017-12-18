@@ -58,8 +58,5 @@ void Setup_BLE(){
 void BLE_send(int b_data)
 {
     // Send input data to host via Bluefruit
-    Serial.println(b_data);
-    ble.println(b_data);
-    QS = false;
 
 }
