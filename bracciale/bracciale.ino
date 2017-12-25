@@ -1,6 +1,5 @@
-
+#include <PulseSensorPlayground.h>
 #include <SPI.h>
-#include <Arduino.h>
 #include <SoftwareSerial.h>
 #include "Adafruit_BLE.h"
 #include "Adafruit_BluefruitLE_SPI.h"

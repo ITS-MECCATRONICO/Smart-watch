@@ -29,7 +29,7 @@ void Event_TMP006(){
     diet = tmp006.readDieTempC();
 
     ble.print("TEM ");
-    ble.println(objt);
+    ble.println(diet);
 
     /*Serial.print("Object Temperature: ");
     Serial.print(objt);

@@ -61,8 +61,8 @@ void pulse_sensor(){
       runningTotal += rate[9];                // add the latest IBI to runningTotal
       runningTotal /= 10;                     // average the last 10 IBI values
       BPM = 60000/runningTotal;               // how many beats can fit into a minute? that's BPM!
-      Save_BPM();
       QS = true;                              // set Quantified Self flag
+      Save_BPM();
       // QS FLAG IS NOT CLEARED INSIDE THIS ISR
     }
   }

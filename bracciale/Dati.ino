@@ -5,12 +5,13 @@ void Save_BPM(){
 
   BPM_temp = BPM_temp + BPM;
   q++;
+  QS = false;
+  Serial.println(BPM);
 
   if(q == 10){
     BPM_record[B] = BPM_temp / 10;
     ble.print("BPM ");
     ble.println(BPM_record[B]);
-    QS = false;  
     B++;
     q = 0;
     BPM_temp = 0;
