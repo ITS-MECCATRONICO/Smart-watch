@@ -12,7 +12,7 @@
 // You should use this option if you are connecting the UART Friend to an UNO
 // ----------------------------------------------------------------------------------------------
 #define BLUEFRUIT_SWUART_RXD_PIN       8    // Required for software serial!
-#define BLUEFRUIT_SWUART_TXD_PIN       9    // Required for software serial!
+#define BLUEFRUIT_SWUART_TXD_PIN       6    // Required for software serial!
 #define BLUEFRUIT_UART_CTS_PIN         12   // Required for software serial!
 #define BLUEFRUIT_UART_RTS_PIN         7    // Optional, set to -1 if unused
 
@@ -51,6 +51,6 @@
 // This should be used with nRF51822 based Bluefruit LE modules that use SPI
 // (Bluefruit LE SPI Friend).
 // ----------------------------------------------------------------------------------------------
-#define BLUEFRUIT_SPI_SCK              13
+#define BLUEFRUIT_SPI_SCK              4
 #define BLUEFRUIT_SPI_MISO             12
 #define BLUEFRUIT_SPI_MOSI             11

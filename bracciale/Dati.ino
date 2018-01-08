@@ -3,10 +3,9 @@ int BPM_temp;
 
 void Save_BPM(){
 
-  BPM_temp = BPM_temp + BPM;
+ // BPM_temp = BPM_temp + BPM;
   q++;
-  QS = false;
-  Serial.println(BPM);
+
 
   if(q == 10){
     BPM_record[B] = BPM_temp / 10;
