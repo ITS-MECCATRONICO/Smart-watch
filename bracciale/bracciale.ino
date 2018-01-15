@@ -52,23 +52,6 @@ void setup() {
   Setup_PS();
   Setup_BLE();
   lastTime = millis();
-  if (!pulseSensor.begin()) {
-    /*
-       PulseSensor initialization failed,
-       likely because our particular Arduino platform interrupts
-       aren't supported yet.
-
-       If your Sketch hangs here, try ProcessEverySample.ino,
-       which doesn't use interrupts.
-    */
-    for(;;) {
-      // Flash the led to show things didn't work.
-      digitalWrite(PIN_BLINK, LOW);
-      delay(50);
-      digitalWrite(PIN_BLINK, HIGH);
-      delay(50);
-    }
-  }
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------
 void loop() {
@@ -93,14 +76,11 @@ void loop() {
     //Serial.println(pulseSensor.getBeatsPerMinute());
   }
 
-  //Serial.print("\t"); Serial.print(X); Serial.print("\t"); Serial.print(Y); Serial.print("\t"); Serial.print(Z); Serial.print("\t");
-  //Serial.print("\t"); Serial.print(objt); Serial.print("\t"); Serial.print(diet); Serial.print("\t")
-
   // Echo received data
   while ( ble.available() )
   {
     int c = ble.read();
 
-    //Serial.print((char)c);
+    Serial.print((char)c);
   }
 }

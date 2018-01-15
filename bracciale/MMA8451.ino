@@ -30,10 +30,6 @@ void Event_MMA8451(){
   X = mma.x;
   Y = mma.y;
   Z = mma.z;
-
-  /*X = X & 2147483647;
-  Y = Y & 2147483647;
-  Z = Z & 2147483647;*/
   
   X = abs(X) / 10;
   Y = abs(Y) / 10;
