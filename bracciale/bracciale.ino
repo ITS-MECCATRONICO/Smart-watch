@@ -83,8 +83,9 @@ void loop() {
 
   if (pulseSensor.sawStartOfBeat())
   {
-    ble.print("BPM ");
-    ble.println(pulseSensor.getBeatsPerMinute());
+    Save_BPM();
+    Serial.print("BPM ");
+    Serial.println(pulseSensor.getBeatsPerMinute());
   }
 
   //Serial.print("\t"); Serial.print(X); Serial.print("\t"); Serial.print(Y); Serial.print("\t"); Serial.print(Z); Serial.print("\t");
