@@ -14,10 +14,12 @@ void Search_MMA8451(){
 }
 
 void Event_MMA8451(){
+  
   // Get a new sensor event
-  /*sensors_event_t event;
+  sensors_event_t event;
   mma.getEvent(&event);
-  // Display the results (acceleration is measured in m/s^2)
+  
+  /*// Display the results (acceleration is measured in m/s^2)
   Serial.print("X: \t"); Serial.print(event.acceleration.x); Serial.print("\t");
   Serial.print("Y: \t"); Serial.print(event.acceleration.y); Serial.print("\t");
   Serial.print("Z: \t"); Serial.print(event.acceleration.z); Serial.print("\t");
@@ -28,4 +30,12 @@ void Event_MMA8451(){
   X = mma.x;
   Y = mma.y;
   Z = mma.z;
+
+  /*X = X & 2147483647;
+  Y = Y & 2147483647;
+  Z = Z & 2147483647;*/
+  
+  X = abs(X) / 10;
+  Y = abs(Y) / 10;
+  Z = abs(Z) / 10;
 }

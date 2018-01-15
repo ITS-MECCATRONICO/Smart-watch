@@ -30,9 +30,10 @@ unsigned long thisTime;
 float objt;
 float diet;
 
-long X;
-long Y;
-long Z;
+int X;
+int Y;
+int Z;
+int acc;
 
 int BPM_record[100];
 int B = 0;
@@ -48,8 +49,8 @@ void setup() {
   Serial.begin(115200);
   Search_TMP006();
   Search_MMA8451();
-  Setup_BLE();
   Setup_PS();
+  Setup_BLE();
   lastTime = millis();
   if (!pulseSensor.begin()) {
     /*
@@ -71,7 +72,11 @@ void setup() {
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------
 void loop() {
+  
   Event_MMA8451();
+  acc = X + Y + Z;
+  Serial.print("ACC ");
+  Serial.println(acc);
 
   thisTime = millis();
   if(thisTime - lastTime > 4000)
@@ -84,8 +89,8 @@ void loop() {
   if (pulseSensor.sawStartOfBeat())
   {
     Save_BPM();
-    Serial.print("BPM ");
-    Serial.println(pulseSensor.getBeatsPerMinute());
+    //Serial.print("BPM ");
+    //Serial.println(pulseSensor.getBeatsPerMinute());
   }
 
   //Serial.print("\t"); Serial.print(X); Serial.print("\t"); Serial.print(Y); Serial.print("\t"); Serial.print(Z); Serial.print("\t");
@@ -96,6 +101,6 @@ void loop() {
   {
     int c = ble.read();
 
-    Serial.print((char)c);
+    //Serial.print((char)c);
   }
 }
