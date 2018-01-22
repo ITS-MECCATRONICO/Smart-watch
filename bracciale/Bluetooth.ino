@@ -33,28 +33,42 @@ void Setup_BLE(){
   Serial.println();
 
   ble.verbose(false);  // debug info is a little annoying after this point!
-
-  // Wait for connection
-  while (! ble.isConnected()) {
-      delay(500);
-  }
-
-  Serial.println("******************************");
-
-  // LED Activity command is only supported from 0.6.6
-  if ( ble.isVersionAtLeast(MINIMUM_FIRMWARE_VERSION) )
-  {
-    // Change Mode LED Activity
-    Serial.println("Change LED activity to " MODE_LED_BEHAVIOUR);
-    ble.sendCommandCheckOK("AT+HWModeLED=" MODE_LED_BEHAVIOUR);
-  }
-
-  // Set module to DATA mode
-  Serial.println("Switching to DATA mode!");
-  ble.setMode(BLUEFRUIT_MODE_DATA);
-
-  Serial.println("******************************");
 }
+
+void BLE_conn()
+{
+  if(ble.isConnected() && Ble) 
+  {
+    return;
+  }  
+
+  else if(ble.isConnected())
+  {
+    Serial.println("******************************");
+
+    // LED Activity command is only supported from 0.6.6
+    if ( ble.isVersionAtLeast(MINIMUM_FIRMWARE_VERSION) )
+    {
+      // Change Mode LED Activity
+      Serial.println("Change LED activity to " MODE_LED_BEHAVIOUR);
+      ble.sendCommandCheckOK("AT+HWModeLED=" MODE_LED_BEHAVIOUR);
+    }
+  
+    // Set module to DATA mode
+    Serial.println("Switching to DATA mode!");
+    ble.setMode(BLUEFRUIT_MODE_DATA);
+  
+    Serial.println("******************************");
+    
+    Ble = true;
+  }
+  
+  else if(!ble.isConnected() && Ble) 
+  {
+    Ble = false;
+  }
+}
+
 void BLE_send(int b_data)
 {
     // Send input data to host via Bluefruit

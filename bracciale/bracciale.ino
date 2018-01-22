@@ -37,6 +37,8 @@ int acc;
 
 int BPM_record[100];
 int B = 0;
+
+bool Ble = 0;
 //----------------------------------------------------------------------------------------------------------------------------------------------
 Adafruit_MMA8451 mma = Adafruit_MMA8451();
 Adafruit_TMP006 tmp006;
@@ -58,8 +60,10 @@ void loop() {
   
   Event_MMA8451();
   acc = X + Y + Z;
-  Serial.print("ACC ");
-  Serial.println(acc);
+  //Serial.print("ACC ");
+  //Serial.println(acc);
+
+  BLE_conn();
 
   thisTime = millis();
   if(thisTime - lastTime > 4000)
