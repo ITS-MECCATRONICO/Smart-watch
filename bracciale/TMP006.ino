@@ -1,12 +1,8 @@
 
-void Search_TMP006(){
+void Search_TMP006()
+{
   Serial.println("Adafruit TMP006 test!");
-  if (! tmp006.begin()) {
-    Serial.println("No sensor found");
-    while (1);
-  }
-  Serial.println("TMP006 found!");
-  Serial.println("Send s to enter sleep mode, or w to wake up.  Measurements are not updated while asleep!");
+  
 }
 
 void Sleep_TMP006(){
@@ -28,8 +24,11 @@ void Event_TMP006(){
     objt = tmp006.readObjTempC();
     diet = tmp006.readDieTempC();
 
-    ble.print("TEM ");
-    ble.println(diet);
+    if(Ble)
+    {
+      ble.print("TEM ");
+      ble.println(diet);
+    } 
 
     /*Serial.print("Object Temperature: ");
     Serial.print(objt);

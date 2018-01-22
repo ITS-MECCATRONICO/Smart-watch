@@ -10,17 +10,15 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_MMA8451.h>
-#include "Adafruit_TMP006.h"
+#include <Adafruit_TMP006.h>
 
 #define FACTORYRESET_ENABLE         0
 #define MINIMUM_FIRMWARE_VERSION    "0.6.6"
 #define MODE_LED_BEHAVIOUR          "MODE"
 //----------------------------------------------------------------------------------------------------------------------------------------------
 //  Variables
-const int OUTPUT_TYPE = SERIAL_PLOTTER;
 const int PIN_INPUT = A0;
 const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
-const int PIN_FADE = 5;
 const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 PulseSensorPlayground pulseSensor;
 
@@ -77,8 +75,8 @@ void loop() {
   if (pulseSensor.sawStartOfBeat())
   {
     Save_BPM();
-    Serial.print("BPM ");
-    Serial.println(pulseSensor.getBeatsPerMinute());
+    //Serial.print("BPM ");
+    //Serial.println(pulseSensor.getBeatsPerMinute());
   }
 
   // Echo received data

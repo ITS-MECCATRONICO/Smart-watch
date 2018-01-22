@@ -37,12 +37,8 @@ void Setup_BLE(){
 
 void BLE_conn()
 {
-  if(ble.isConnected() && Ble) 
-  {
-    return;
-  }  
 
-  else if(ble.isConnected())
+  if(ble.isConnected() && !Ble)
   {
     Serial.println("******************************");
 
