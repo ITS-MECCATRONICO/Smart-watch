@@ -13,7 +13,8 @@ void Search_MMA8451(){
   Serial.println("G");
 }
 
-void Event_MMA8451(){
+void Event_MMA8451()
+{
   
   // Get a new sensor event
   sensors_event_t event;
@@ -35,3 +36,12 @@ void Event_MMA8451(){
   Y = abs(Y) / 10;
   Z = abs(Z) / 10;
 }
+
+void Campiona()
+{
+  if(acc > temp_acc + 50)
+  {
+    
+  }  
+}
+

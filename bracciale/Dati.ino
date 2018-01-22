@@ -7,8 +7,8 @@ void Save_BPM(){
   q++;
 
 
-  if(q == 30){
-    BPM_record[B] = BPM_temp / 30;
+  if(q == 20){
+    BPM_record[B] = BPM_temp / 20;
     ble.print("BPM ");
     ble.println(BPM_record[B]);
     B++;

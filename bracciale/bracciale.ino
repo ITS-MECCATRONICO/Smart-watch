@@ -34,6 +34,7 @@ int X;
 int Y;
 int Z;
 int acc;
+int temp_acc;
 
 int BPM_record[100];
 int B = 0;
@@ -76,8 +77,8 @@ void loop() {
   if (pulseSensor.sawStartOfBeat())
   {
     Save_BPM();
-    //Serial.print("BPM ");
-    //Serial.println(pulseSensor.getBeatsPerMinute());
+    Serial.print("BPM ");
+    Serial.println(pulseSensor.getBeatsPerMinute());
   }
 
   // Echo received data
