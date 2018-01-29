@@ -1,33 +1,43 @@
-#include <Event.h>
-#include <Timer.h>
-
 #include <Wire.h>
 #include <Adafruit_MMA8451.h>
 #include <Adafruit_Sensor.h>
 
 Adafruit_MMA8451 mma = Adafruit_MMA8451();
-Timer t;
+
+int cont = 0;
 void setup() 
 {
 
   Serial.begin(9600);
+  
   mma.setRange(MMA8451_RANGE_2_G);
-  int tickEvent = t.every(2000, doSomething);
-
+  
+  // Initializes Timer2 to throw an interrupt every 2mS.
+  TCCR2A = 0x02;     // DISABLE PWM ON DIGITAL PINS 3 AND 11, AND GO INTO CTC MODE
+  TCCR2B = 0x05;     // DON'T FORCE COMPARE, 128 PRESCALER
+  OCR2A = 0X7C;      // SET THE TOP OF THE COUNT TO 124 FOR 500Hz SAMPLE RATE
+  TIMSK2 = 0x02;     // ENABLE INTERRUPT ON MATCH BETWEEN TIMER2 AND OCR2A
+  sei();             // MAKE SURE GLOBAL INTERRUPTS ARE ENABLED
 }
 
 void loop() 
 {
-  mma.read();
-  Serial.print("X:\t"); Serial.print(mma.x); 
-  Serial.print("\tY:\t"); Serial.print(mma.y); 
-  Serial.print("\tZ:\t"); Serial.print(mma.z); 
-  Serial.println();
-  t.update();
+  
 }
 
-void doSomething()
+ISR(TIMER2_COMPA_vect)
 {
-  Serial.println(millis());
-}
+  cli(); 
+  cont++;
 
+  if(cont == 500)
+  {
+    Serial.println(millis());
+    mma.read();
+  Serial.print(mma.x); 
+  Serial.print(mma.y); 
+  Serial.println(mma.z);
+    cont = 0;
+  }
+  sei();
+}// end isr
