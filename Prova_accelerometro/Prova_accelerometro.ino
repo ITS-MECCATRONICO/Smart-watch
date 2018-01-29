@@ -1,16 +1,33 @@
+#include <Event.h>
+#include <Timer.h>
+
+#include <Wire.h>
+#include <Adafruit_MMA8451.h>
+#include <Adafruit_Sensor.h>
+
+Adafruit_MMA8451 mma = Adafruit_MMA8451();
+Timer t;
 void setup() 
 {
 
-  TCCR2A = 0x02;          // Disable PWM and go into CTC mode
-  TCCR2B = 0x05;          // don't force compare, 128 prescaler
-  OCR2A = 0X7C;           // set count to 124 for 2mS interrupt
-  TIMSK2 = 0x02;          // Enable OCR2A match interrupt
+  Serial.begin(9600);
+  mma.setRange(MMA8451_RANGE_2_G);
+  int tickEvent = t.every(2000, doSomething);
 
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-
+void loop() 
+{
+  mma.read();
+  Serial.print("X:\t"); Serial.print(mma.x); 
+  Serial.print("\tY:\t"); Serial.print(mma.y); 
+  Serial.print("\tZ:\t"); Serial.print(mma.z); 
+  Serial.println();
+  t.update();
 }
 
+void doSomething()
+{
+  Serial.println(millis());
+}
 
