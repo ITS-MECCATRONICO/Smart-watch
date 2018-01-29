@@ -8,15 +8,15 @@ void Save_BPM()
   q++;
 
   if(q == 20){
-    BPM_record[B] = BPM_temp / 20;
+    BPM_record = BPM_temp / 20;
 
     if(Ble)
     {
       ble.print("BPM ");
-      ble.println(BPM_record[B]);
+      ble.println(BPM_record);
     }
     
-    B++;
+    //B++;
     q = 0;
     BPM_temp = 0;
   }
