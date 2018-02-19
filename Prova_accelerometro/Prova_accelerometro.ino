@@ -25,7 +25,8 @@ void setup()
   mma.setRange(MMA8451_RANGE_2_G);
 
   Timer1.initialize(100000);
-  Timer1.attachInterrupt(interr); // blinkLED to run every 500 ms
+ 
+  Timer1.attachInterrupt(int_1); // blinkLED to run every 500 ms
 
 }
 
@@ -41,7 +42,7 @@ void loop()
 
 }
 
-void interr()
+void int_1()
 {
   
   tempx = 0;
@@ -57,7 +58,7 @@ void interr()
     Ax[i] = 0;
     Ay[i] = 0;
     Az[i] = 0;
-  }
+  }//end for(i = 0; i < index;  i++)
 
   X = tempx / index;
   Y = tempy / index;
@@ -66,15 +67,17 @@ void interr()
   //Serial.println(micros());
   //Serial.println(x[5]);
   Serial.print(X);
-   Serial.print("\t");
+  Serial.print("\t");
   Serial.print(Y);
-   Serial.print("\t");
-  Serial.println(Z);
-  //Serial.println(index);
+  Serial.print("\t");
+  Serial.print(Z);
+  Serial.print("\t");
+  Serial.println(index);
+  
   
   index = 0;
   
   //Serial.println("-----------------------------------------------------");
 
-}// end interr
+}// end int_1
 
