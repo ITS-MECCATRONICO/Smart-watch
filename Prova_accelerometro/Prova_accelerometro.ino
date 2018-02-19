@@ -1,13 +1,14 @@
 #include <Wire.h>
 #include <Adafruit_MMA8451.h>
 #include <Adafruit_Sensor.h>
+#include <TimerOne.h>
 
 Adafruit_MMA8451 mma = Adafruit_MMA8451();
 
-int cont = 0;
-int x[200], y[200], z[200];
+int Ax[100], Ay[100], Az[100];
 int index = 0, i = 0;
-int tempx, tempy, tempz;
+int X, Y, Z;
+long tempx, tempy, tempz;
 
 void setup()
 {
@@ -22,8 +23,9 @@ void setup()
   Serial.println("MMA8451 found!");
   
   mma.setRange(MMA8451_RANGE_2_G);
-  
-  interruptSetup();
+
+  Timer1.initialize(100000);
+  Timer1.attachInterrupt(interr); // blinkLED to run every 500 ms
 
 }
 
@@ -31,52 +33,48 @@ void loop()
 {
   mma.read();
 
-  x[index] = mma.x;
-  y[index] = mma.y;
-  z[index] = mma.z;
+  Ax[index] = mma.x;
+  Ay[index] = mma.y;
+  Az[index] = mma.z;
   
   index++;
 
 }
 
-ISR(TIMER2_COMPA_vect)
+void interr()
 {
-  cli();
-  cont++;
-  //Serial.println(micros());
+  
+  tempx = 0;
+  tempy = 0;
+  tempz = 0;
 
-  if(cont == 500) //con 50 ogni 100ms
+  for(i = 0; i < index;  i++)
   {
-    for(i = 0; i++; i < index)
-    {
-      tempx = tempx + x[i];
-      tempy = tempy + y[i];
-      tempz = tempz + z[i];
-    }
+    tempx = tempx + Ax[i];
+    tempy = tempy + Ay[i];
+    tempz = tempz + Az[i];
 
-    tempx = tempx / index;
-    tempy = tempy / index;
-    tempz = tempz / index;
-
-    //Serial.println(micros());
-    Serial.println(tempz);
-
-    tempx = 0;
-    tempy = 0;
-    tempz = 0;
-    
-    index = 0;
-    cont = 0;
+    Ax[i] = 0;
+    Ay[i] = 0;
+    Az[i] = 0;
   }
-  sei();
-}// end isr
 
-void interruptSetup()
-{
-    // Initializes Timer2 to throw an interrupt every 2mS.
-    TCCR2A = 0x02;     // DISABLE PWM ON DIGITAL PINS 3 AND 11, AND GO INTO CTC MODE
-    TCCR2B = 0x05;     // DON'T FORCE COMPARE, 128 PRESCALER
-    OCR2A = 0X7c;      // SET THE TOP OF THE COUNT TO 124 FOR 500Hz SAMPLE RATE
-    TIMSK2 = 0x02;     // ENABLE INTERRUPT ON MATCH BETWEEN TIMER2 AND OCR2A
-    sei();             // MAKE SURE GLOBAL INTERRUPTS ARE ENABLED
- }
+  X = tempx / index;
+  Y = tempy / index;
+  Z = tempz / index;
+
+  //Serial.println(micros());
+  //Serial.println(x[5]);
+  Serial.print(X);
+   Serial.print("\t");
+  Serial.print(Y);
+   Serial.print("\t");
+  Serial.println(Z);
+  //Serial.println(index);
+  
+  index = 0;
+  
+  //Serial.println("-----------------------------------------------------");
+
+}// end interr
+
