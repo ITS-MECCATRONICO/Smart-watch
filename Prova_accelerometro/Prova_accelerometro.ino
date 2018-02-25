@@ -5,7 +5,7 @@
 Adafruit_MMA8451 mma = Adafruit_MMA8451();
 
 int Ax[100], Ay[100], Az[100];
-int index = 0, temp;
+int index = 0, cont;
 int X, Y, Z;
 long tempx, tempy, tempz;
 
@@ -30,22 +30,19 @@ void setup()
 
 void loop() 
 {
-  //temp++;
-  //temp--;
-}
-
-ISR(TIMER2_COMPA_vect)
-{
-  cli();
-
   mma.read();
   Ax[index] = mma.x;
   Ay[index] = mma.y;
   Az[index] = mma.z;
   
   index++;
+}
 
-  if (index >= 50)
+ISR(TIMER2_COMPA_vect)
+{
+  cli();
+  cont++;
+  if (cont >= 50)
   {
     tempx = 0;
     tempy = 0;
@@ -74,9 +71,12 @@ ISR(TIMER2_COMPA_vect)
     Serial.print("\t");
     Serial.print(Z);
     Serial.print("\t");
+    Serial.print(cont);
+    Serial.print("\t");
     Serial.println(index);
      
     index = 0;
+    cont = 0;
     
     //Serial.println("-----------------------------------------------------");
 
