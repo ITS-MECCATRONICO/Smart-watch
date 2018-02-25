@@ -1,11 +1,16 @@
 #include <Wire.h>
 #include <Adafruit_MMA8451.h>
 #include <Adafruit_Sensor.h>
+#include <TimerOne.h>
 
 Adafruit_MMA8451 mma = Adafruit_MMA8451();
 
 int Ax[100], Ay[100], Az[100];
+<<<<<<< HEAD
 int index = 0, cont = 0;
+=======
+int index = 0, i = 0;
+>>>>>>> 3e64ccd50c1a7d97c4b3ae866c1b84033ca942c9
 int X, Y, Z;
 long tempx, tempy, tempz;
 
@@ -24,17 +29,32 @@ void setup()
   
   mma.setRange(MMA8451_RANGE_2_G);
 
+<<<<<<< HEAD
   Timer_2_Setup();
+=======
+  Timer1.initialize(100000);
+ 
+  Timer1.attachInterrupt(int_1); // blinkLED to run every 500 ms
+>>>>>>> 3e64ccd50c1a7d97c4b3ae866c1b84033ca942c9
 
 }
 
 void loop() 
 {
+<<<<<<< HEAD
+=======
+  mma.read();
+
+  Ax[index] = mma.x;
+  Ay[index] = mma.y;
+  Az[index] = mma.z;
+>>>>>>> 3e64ccd50c1a7d97c4b3ae866c1b84033ca942c9
   
 }
 
-ISR(TIMER2_COMPA_vect)
+void int_1()
 {
+<<<<<<< HEAD
 
   mma.read();
 
@@ -103,3 +123,42 @@ void Timer_2_Setup() //ISR(TIMER2_COMPA_vect)
   sei();             // MAKE SURE GLOBAL INTERRUPTS ARE ENABLED
 }
 
+=======
+  
+  tempx = 0;
+  tempy = 0;
+  tempz = 0;
+
+  for(i = 0; i < index;  i++)
+  {
+    tempx = tempx + Ax[i];
+    tempy = tempy + Ay[i];
+    tempz = tempz + Az[i];
+
+    Ax[i] = 0;
+    Ay[i] = 0;
+    Az[i] = 0;
+  }//end for(i = 0; i < index;  i++)
+
+  X = tempx / index;
+  Y = tempy / index;
+  Z = tempz / index;
+
+  //Serial.println(micros());
+  //Serial.println(x[5]);
+  Serial.print(X);
+  Serial.print("\t");
+  Serial.print(Y);
+  Serial.print("\t");
+  Serial.print(Z);
+  Serial.print("\t");
+  Serial.println(index);
+  
+  
+  index = 0;
+  
+  //Serial.println("-----------------------------------------------------");
+
+}// end int_1
+
+>>>>>>> 3e64ccd50c1a7d97c4b3ae866c1b84033ca942c9
