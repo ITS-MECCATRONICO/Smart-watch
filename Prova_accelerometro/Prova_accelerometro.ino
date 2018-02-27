@@ -1,7 +1,7 @@
 #include <Wire.h>
+#include <I2C.h>
 #include <Adafruit_Sensor.h>
 #include "Adafruit_TMP006.h"
-#include <I2C.h>
 #include <MMA8451_n0m1.h>
 
 Adafruit_TMP006 tmp006;
@@ -21,15 +21,13 @@ void setup()
 {
 
   Serial.begin(9600);
-  pinMode(LED_BUILTIN, OUTPUT);
+  
   Serial.println("Adafruit TMP006 example");
   if (! tmp006.begin()) 
   {
     Serial.println("No sensor found");
     while (1);
   }
-  
-  lastTime = millis();
 
   accel.setI2CAddr(0x1D); //change your device address if necessary, default is 0x1C
   accel.dataMode(true, 2); //enable highRes 10bit, 2g range [2g,4g,8g]
@@ -37,6 +35,7 @@ void setup()
   Serial.println("XYZ Data Example");
   Serial.println("n0m1.com");
 
+  lastTime = millis();
   Timer_2_Setup();
   
 }
@@ -47,7 +46,6 @@ void loop()
   thisTime = millis();
   if(thisTime - lastTime > 4000)
   {
-    digitalWrite(LED_BUILTIN, HIGH);
     diet = tmp006.readDieTempC();
     lastTime = millis();
   }
@@ -66,7 +64,7 @@ ISR(TIMER2_COMPA_vect)
   
   index++;
   cont++;
-  if (cont >= 50)
+  if (cont >= 51)
   {
     tempx = 0;
     tempy = 0;
@@ -97,7 +95,7 @@ ISR(TIMER2_COMPA_vect)
     Serial.print("\t");
     Serial.print(cont);
     Serial.print("\t");
-    Serial.println(index);
+    Serial.println(millis());
      
     index = 0;
     cont = 0;
