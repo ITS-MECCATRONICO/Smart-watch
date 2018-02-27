@@ -1,46 +1,74 @@
 #include <Wire.h>
 #include <Adafruit_MMA8451.h>
 #include <Adafruit_Sensor.h>
+#include "Adafruit_TMP006.h"
 
 Adafruit_MMA8451 mma = Adafruit_MMA8451();
+Adafruit_TMP006 tmp006;
+
+unsigned long lastTime;
+unsigned long thisTime;
 
 int Ax[100], Ay[100], Az[100];
 int index = 0, cont;
 int X, Y, Z;
+int diet;
+
 long tempx, tempy, tempz;
 
 void setup()
 {
 
   Serial.begin(9600);
-  Serial.println("Adafruit MMA8451 test!");
+  pinMode(LED_BUILTIN, OUTPUT);
   
+  Serial.println("Adafruit MMA8451 test!");  
   if (! mma.begin()) 
   {
     Serial.println("Couldnt start");
     while (1);
   }
   Serial.println("MMA8451 found!");
-  
   mma.setRange(MMA8451_RANGE_2_G);
 
+  Serial.println("Adafruit TMP006 example");
+  if (! tmp006.begin()) 
+  {
+    Serial.println("No sensor found");
+    while (1);
+  }
+  
+  lastTime = millis();
   Timer_2_Setup();
 
 }
 
 void loop() 
 {
+
   mma.read();
-  Ax[index] = mma.x;
-  Ay[index] = mma.y;
-  Az[index] = mma.z;
   
-  index++;
+  thisTime = millis();
+  if(thisTime - lastTime > 4000)
+  {
+    digitalWrite(LED_BUILTIN, HIGH);
+    diet = tmp006.readDieTempC();
+    lastTime = millis();
+  }
+
+  digitalWrite(LED_BUILTIN, LOW);
+  
 }
 
 ISR(TIMER2_COMPA_vect)
 {
   cli();
+  
+  Ax[index] = mma.x;
+  Ay[index] = mma.y;
+  Az[index] = mma.z;
+  
+  index++;
   cont++;
   if (cont >= 50)
   {
