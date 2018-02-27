@@ -1,10 +1,11 @@
 #include <Wire.h>
-#include <Adafruit_MMA8451.h>
 #include <Adafruit_Sensor.h>
 #include "Adafruit_TMP006.h"
+#include <I2C.h>
+#include <MMA8451_n0m1.h>
 
-Adafruit_MMA8451 mma = Adafruit_MMA8451();
 Adafruit_TMP006 tmp006;
+MMA8451_n0m1 accel;
 
 unsigned long lastTime;
 unsigned long thisTime;
@@ -21,16 +22,6 @@ void setup()
 
   Serial.begin(9600);
   pinMode(LED_BUILTIN, OUTPUT);
-  
-  Serial.println("Adafruit MMA8451 test!");  
-  if (! mma.begin()) 
-  {
-    Serial.println("Couldnt start");
-    while (1);
-  }
-  Serial.println("MMA8451 found!");
-  mma.setRange(MMA8451_RANGE_2_G);
-
   Serial.println("Adafruit TMP006 example");
   if (! tmp006.begin()) 
   {
@@ -39,15 +30,20 @@ void setup()
   }
   
   lastTime = millis();
-  Timer_2_Setup();
 
+  accel.setI2CAddr(0x1D); //change your device address if necessary, default is 0x1C
+  accel.dataMode(true, 2); //enable highRes 10bit, 2g range [2g,4g,8g]
+  Serial.println("MMA8451_n0m1 library");
+  Serial.println("XYZ Data Example");
+  Serial.println("n0m1.com");
+
+  Timer_2_Setup();
+  
 }
 
 void loop() 
 {
 
-  mma.read();
-  
   thisTime = millis();
   if(thisTime - lastTime > 4000)
   {
@@ -55,18 +51,18 @@ void loop()
     diet = tmp006.readDieTempC();
     lastTime = millis();
   }
-
-  digitalWrite(LED_BUILTIN, LOW);
   
 }
 
 ISR(TIMER2_COMPA_vect)
 {
   cli();
+
+  accel.update();
   
-  Ax[index] = mma.x;
-  Ay[index] = mma.y;
-  Az[index] = mma.z;
+  Ax[index] = accel.x();
+  Ay[index] = accel.y();
+  Az[index] = accel.z();
   
   index++;
   cont++;
