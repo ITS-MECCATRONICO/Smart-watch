@@ -10,7 +10,7 @@ MMA8451_n0m1 accel;
 unsigned long lastTime;
 unsigned long thisTime;
 
-int Ax[100], Ay[100], Az[100];
+int Ax[60], Ay[60], Az[60];
 int index = 0, cont;
 int X, Y, Z;
 int diet;
@@ -69,7 +69,8 @@ ISR(TIMER2_COMPA_vect)
   index++;
   cont++;
     
-  if (cont >= 51)
+  //if (cont >= 51)
+  if (cont >= 25)
   {
     tempx = 0;
     tempy = 0;
