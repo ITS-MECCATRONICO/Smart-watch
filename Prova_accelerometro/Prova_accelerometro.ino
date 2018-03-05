@@ -20,7 +20,7 @@ long tempx, tempy, tempz;
 void setup()
 {
 
-  Serial.begin(9600);
+  Serial.begin(500000);
   
   Serial.println("Adafruit TMP006 example");
   if (! tmp006.begin()) 
@@ -61,9 +61,14 @@ ISR(TIMER2_COMPA_vect)
   Ax[index] = accel.x();
   Ay[index] = accel.y();
   Az[index] = accel.z();
+
+  /*Serial.print(X);
+  Serial.print("\t");
+  Serial.println(Ax[index]);*/
   
   index++;
   cont++;
+    
   if (cont >= 51)
   {
     tempx = 0;
@@ -87,15 +92,15 @@ ISR(TIMER2_COMPA_vect)
   
     //Serial.println(micros());
     //Serial.println(x[5]);
-    Serial.print(X);
+    Serial.println(X);
     Serial.print("\t");
-    Serial.print(Y);
+    /*Serial.print(Y);
     Serial.print("\t");
     Serial.print(Z);
     Serial.print("\t");
     Serial.print(cont);
     Serial.print("\t");
-    Serial.println(millis());
+    Serial.println(millis());*/
      
     index = 0;
     cont = 0;
