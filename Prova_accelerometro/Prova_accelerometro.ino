@@ -7,8 +7,8 @@
 Adafruit_TMP006 tmp006;
 MMA8451_n0m1 accel;
 
-unsigned long lastTime;
-unsigned long thisTime;
+bool su_X, su_Y, su_Z;
+bool giu_X, giu_Y, giu_Z;
 
 int Ax_1[30], Ay_1[30], Az_1[30];
 int Ax_2[30], Ay_2[30], Az_2[30];
@@ -19,6 +19,9 @@ int picco_X, picco_Y, picco_Z;
 int last_X, last_Y, last_Z;
 int Osc_X, Osc_Y, Osc_Z;
 int diet;
+
+unsigned long lastTime;
+unsigned long thisTime;
 
 long tempx, tempy, tempz;
 
