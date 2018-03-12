@@ -14,6 +14,10 @@ int Ax_1[30], Ay_1[30], Az_1[30];
 int Ax_2[30], Ay_2[30], Az_2[30];
 int index_1, index_2, cont = 1;
 int X, Y, Z;
+int PICCO_X, PICCO_Y, PICCO_Z;
+int picco_X, picco_Y, picco_Z;
+int last_X, last_Y, last_Z;
+int Osc_X, Osc_Y, Osc_Z;
 int diet;
 
 long tempx, tempy, tempz;
@@ -56,7 +60,8 @@ void loop()
     diet = tmp006.readDieTempC();
     lastTime = millis();
   }
-  
+
+  Print();
 }
 
 ISR(TIMER2_COMPA_vect)
@@ -112,16 +117,6 @@ void Media_1()
     X = tempx / index_1;
     Y = tempy / index_1;
     Z = tempz / index_1;
-
-    Serial.print(X);
-    Serial.print("\t");
-    Serial.print(Y);
-    Serial.print("\t");
-    Serial.println(Z);
-    /*Serial.print("\t");
-    Serial.print(cont);
-    Serial.print("\t");
-    Serial.println(millis());*/
      
     index_1 = 0;  
 }
@@ -146,19 +141,29 @@ void Media_2()
     X = tempx / index_2;
     Y = tempy / index_2;
     Z = tempz / index_2;
-
-    Serial.print(X);
-    Serial.print("\t");
-    Serial.print(Y);
-    Serial.print("\t");
-    Serial.println(Z);
-    /*Serial.print("\t");
-    Serial.print(cont);
-    Serial.print("\t");
-    Serial.println(millis());*/
      
     index_2 = 0;  
 }
+
+
+void Print()
+{
+  Serial.print(X);
+  Serial.print("\t");
+  Serial.print(Y);
+  Serial.print("\t");
+  Serial.print(Z);
+  Serial.print("\t");
+  Serial.print(PICCO_X);
+  Serial.print("\t");
+  Serial.println(picco_X);
+  /*Serial.print("\t");
+  Serial.print(cont);
+  Serial.print("\t");
+  Serial.println(millis());*/
+}
+
+
 
 void Timer_1_Setup() //ISR(TIMER1_OVF_vect)
 {
