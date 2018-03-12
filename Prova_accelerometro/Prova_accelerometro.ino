@@ -10,8 +10,9 @@ MMA8451_n0m1 accel;
 unsigned long lastTime;
 unsigned long thisTime;
 
-int Ax[60], Ay[60], Az[60];
-int index = 0, cont;
+int Ax_1[30], Ay_1[30], Az_1[30];
+int Ax_2[30], Ay_2[30], Az_2[30];
+int index_1, index_2, cont = 1;
 int X, Y, Z;
 int diet;
 
@@ -20,7 +21,7 @@ long tempx, tempy, tempz;
 void setup()
 {
 
-  Serial.begin(500000);
+  Serial.begin(9600);
   
   Serial.println("Adafruit TMP006 example");
   if (! tmp006.begin()) 
@@ -43,6 +44,12 @@ void setup()
 void loop() 
 {
 
+  if (index_1 >= 25)
+    Media_1();
+
+  else if (index_2 >= 25)
+    Media_2();
+
   thisTime = millis();
   if(thisTime - lastTime > 4000)
   {
@@ -57,60 +64,101 @@ ISR(TIMER2_COMPA_vect)
   cli();
 
   accel.update();
-  
-  Ax[index] = accel.x();
-  Ay[index] = accel.y();
-  Az[index] = accel.z();
 
-  /*Serial.print(X);
-  Serial.print("\t");
-  Serial.println(Ax[index]);*/
-  
-  index++;
-  cont++;
-    
-  //if (cont >= 51)
-  if (cont >= 25)
+  if (cont == 1)
   {
+    Ax_1[index_1] = accel.x();
+    Ay_1[index_1] = accel.y();
+    Az_1[index_1] = accel.z();
+    
+    index_1++;
+
+    if (index_1 == 25)
+      cont = 2;
+  }
+
+  else if (cont == 2)
+  {
+    Ax_2[index_2] = accel.x();
+    Ay_2[index_2] = accel.y();
+    Az_2[index_2] = accel.z();
+    
+    index_2++;
+
+    if (index_2 == 25)
+      cont = 1;
+  }
+    
+  sei();
+}// end int_1
+
+void Media_1()
+{
     tempx = 0;
     tempy = 0;
     tempz = 0;
   
-    for(int i = 0; i < index;  i++)
+    for(int i = 0; i < index_1;  i++)
     {
-      tempx = tempx + Ax[i];
-      tempy = tempy + Ay[i];
-      tempz = tempz + Az[i];
+      tempx = tempx + Ax_1[i];
+      tempy = tempy + Ay_1[i];
+      tempz = tempz + Az_1[i];
   
-      Ax[i] = 0;
-      Ay[i] = 0;
-      Az[i] = 0;
-    }//end for(i = 0; i < index;  i++)
+      Ax_1[i] = 0;
+      Ay_1[i] = 0;
+      Az_1[i] = 0;
+    }//end for(i = 0; i < index_1;  i++)
   
-    X = tempx / index;
-    Y = tempy / index;
-    Z = tempz / index;
-  
-    //Serial.println(micros());
-    //Serial.println(x[5]);
-    Serial.println(X);
+    X = tempx / index_1;
+    Y = tempy / index_1;
+    Z = tempz / index_1;
+
+    Serial.print(X);
     Serial.print("\t");
-    /*Serial.print(Y);
+    Serial.print(Y);
     Serial.print("\t");
-    Serial.print(Z);
-    Serial.print("\t");
+    Serial.println(Z);
+    /*Serial.print("\t");
     Serial.print(cont);
     Serial.print("\t");
     Serial.println(millis());*/
      
-    index = 0;
-    cont = 0;
-    
-    //Serial.println("-----------------------------------------------------");
+    index_1 = 0;  
+}
 
-  }//end if (cont >= 50)
-  sei();
-}// end int_1
+void Media_2()
+{
+    tempx = 0;
+    tempy = 0;
+    tempz = 0;
+  
+    for(int i = 0; i < index_2;  i++)
+    {
+      tempx = tempx + Ax_2[i];
+      tempy = tempy + Ay_2[i];
+      tempz = tempz + Az_2[i];
+  
+      Ax_2[i] = 0;
+      Ay_2[i] = 0;
+      Az_2[i] = 0;
+    }//end for(i = 0; i < index_2;  i++)
+  
+    X = tempx / index_2;
+    Y = tempy / index_2;
+    Z = tempz / index_2;
+
+    Serial.print(X);
+    Serial.print("\t");
+    Serial.print(Y);
+    Serial.print("\t");
+    Serial.println(Z);
+    /*Serial.print("\t");
+    Serial.print(cont);
+    Serial.print("\t");
+    Serial.println(millis());*/
+     
+    index_2 = 0;  
+}
 
 void Timer_1_Setup() //ISR(TIMER1_OVF_vect)
 {
