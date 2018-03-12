@@ -54,6 +54,8 @@ void loop()
   else if (index_2 >= 25)
     Media_2();
 
+  Picco();
+
   thisTime = millis();
   if(thisTime - lastTime > 4000)
   {
@@ -145,6 +147,31 @@ void Media_2()
     index_2 = 0;  
 }
 
+void Picco()
+{
+    volatile int this_X, this_Y, this_Z;
+
+    this_X = X;
+    this_Y = Y;
+    this_Z = Z;
+
+    if (this_X > last_X + 500)//picco su
+    {
+      PICCO_X = this_X;
+    }
+
+    else if (this_X < last_X - 500)//picco giu
+    {
+      picco_X = this_X;
+    }
+
+    else//no picco rilevato
+    {
+      
+    }
+
+    last_X = this_X;
+}
 
 void Print()
 {
