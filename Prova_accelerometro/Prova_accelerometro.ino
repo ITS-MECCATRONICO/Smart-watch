@@ -9,10 +9,11 @@ MMA8451_n0m1 accel;
 
 bool su_X, su_Y, su_Z;
 bool giu_X, giu_Y, giu_Z;
+bool freq_X, freq_Y, freq_Z;
 
 int Ax_1[30], Ay_1[30], Az_1[30];
 int Ax_2[30], Ay_2[30], Az_2[30];
-int index_1, index_2, cont = 1;
+int index_1, index_2, cont = 1, cont_2;
 int X, Y, Z;
 int PICCO_X, PICCO_Y, PICCO_Z;
 int picco_X, picco_Y, picco_Z;
@@ -28,7 +29,7 @@ long tempx, tempy, tempz;
 void setup()
 {
 
-  Serial.begin(9600);
+  Serial.begin(57600);
   
   Serial.println("Adafruit TMP006 example");
   if (! tmp006.begin()) 
@@ -160,17 +161,26 @@ void Picco()
 
     if (this_X > last_X + 500)//picco su
     {
-      PICCO_X = this_X;
+      su_X = 1;
+      giu_X = 0;
     }
-
     else if (this_X < last_X - 500)//picco giu
     {
-      picco_X = this_X;
+      su_X = 0;
+      giu_X = 1;
     }
-
     else//no picco rilevato
     {
       
+    }
+
+    if (su_X == 1 && this_X > last_X)
+    {
+      PICCO_X = this_X;
+    }
+     else if (giu_X == 1 && this_X < last_X)
+    {
+      picco_X = this_X;
     }
 
     last_X = this_X;
@@ -180,9 +190,11 @@ void Print()
 {
   Serial.print(X);
   Serial.print("\t");
-  Serial.print(Y);
+  /*Serial.print(Y);
   Serial.print("\t");
   Serial.print(Z);
+  Serial.print("\t");*/
+  Serial.print(su_X);
   Serial.print("\t");
   Serial.print(PICCO_X);
   Serial.print("\t");
