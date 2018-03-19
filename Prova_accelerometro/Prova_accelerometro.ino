@@ -13,11 +13,12 @@ bool freq_X, freq_Y, freq_Z;
 
 int Ax_1[30], Ay_1[30], Az_1[30];
 int Ax_2[30], Ay_2[30], Az_2[30];
-int index_1, index_2, cont = 1, cont_2;
+int index_1, index_2, cont = 1, cont_1_s, n_osc, freq;
 int X, Y, Z;
 int PICCO_X, PICCO_Y, PICCO_Z;
 int picco_X, picco_Y, picco_Z;
 int last_X, last_Y, last_Z;
+int last_osc_X, last_osc_Y, last_osc_Z;
 int Osc_X, Osc_Y, Osc_Z;
 int diet;
 
@@ -45,7 +46,7 @@ void setup()
   Serial.println("n0m1.com");
 
   lastTime = millis();
-  Timer_2_Setup();
+  Timer_1_Setup();
   
 }
 
@@ -60,6 +61,8 @@ void loop()
 
   Picco();
 
+  //frequenza(su_X);
+
   thisTime = millis();
   if(thisTime - lastTime > 4000)
   {
@@ -70,7 +73,7 @@ void loop()
   Print();
 }
 
-ISR(TIMER2_COMPA_vect)
+ISR(TIMER1_OVF_vect)
 {
   cli();
 
@@ -99,7 +102,16 @@ ISR(TIMER2_COMPA_vect)
     if (index_2 == 25)
       cont = 1;
   }
-    
+
+  if (cont_1_s >= 500)
+  {
+    freq = n_osc;
+    n_osc = 0;
+    cont_1_s = 0;
+  }
+
+  cont_1_s ++;
+  
   sei();
 }// end int_1
 
@@ -183,6 +195,12 @@ void Picco()
       picco_X = this_X;
     }
 
+    if (last_osc_X != su_X)
+    {
+      n_osc ++;
+      last_osc_X = su_X;
+    }
+
     last_X = this_X;
 }
 
@@ -198,14 +216,14 @@ void Print()
   Serial.print("\t");
   Serial.print(PICCO_X);
   Serial.print("\t");
-  Serial.println(picco_X);
+  Serial.print(picco_X);
+  Serial.print("\t");
+  Serial.println(freq);
   /*Serial.print("\t");
   Serial.print(cont);
   Serial.print("\t");
   Serial.println(millis());*/
 }
-
-
 
 void Timer_1_Setup() //ISR(TIMER1_OVF_vect)
 {
