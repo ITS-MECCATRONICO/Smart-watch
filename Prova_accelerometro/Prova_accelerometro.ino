@@ -9,17 +9,17 @@ MMA8451_n0m1 accel;
 
 bool su_X, su_Y, su_Z;
 bool giu_X, giu_Y, giu_Z;
-bool freq_X, freq_Y, freq_Z;
 
 int Ax_1[30], Ay_1[30], Az_1[30];
 int Ax_2[30], Ay_2[30], Az_2[30];
-int index_1, index_2, cont = 1, cont_1_s, n_osc, freq;
+int index_1, index_2, cont = 1, cont_1_s;
 int X, Y, Z;
 int PICCO_X, PICCO_Y, PICCO_Z;
 int picco_X, picco_Y, picco_Z;
 int last_X, last_Y, last_Z;
 int last_osc_X, last_osc_Y, last_osc_Z;
 int Osc_X, Osc_Y, Osc_Z;
+int freq_X, freq_Y, freq_Z;
 int diet;
 
 unsigned long lastTime;
@@ -103,10 +103,17 @@ ISR(TIMER1_OVF_vect)
       cont = 1;
   }
 
-  if (cont_1_s >= 500)
+  if (cont_1_s >= 500)//CONTEGGIO IMPULSI IN UN SECONDO
   {
-    freq = n_osc;
-    n_osc = 0;
+    freq_X = Osc_X;
+    Osc_X = 0;
+
+    freq_Y = Osc_Y;
+    Osc_Y = 0;
+
+    freq_Z = Osc_Z;
+    Osc_Z = 0;
+    
     cont_1_s = 0;
   }
 
@@ -170,7 +177,8 @@ void Picco()
     this_X = X;
     this_Y = Y;
     this_Z = Z;
-
+    
+//----------------------------------------------------X
     if (this_X > last_X + 500)//picco su
     {
       su_X = 1;
@@ -181,27 +189,70 @@ void Picco()
       su_X = 0;
       giu_X = 1;
     }
-    else//no picco rilevato
-    {
-      
-    }
 
     if (su_X == 1 && this_X > last_X)
-    {
       PICCO_X = this_X;
-    }
+      
      else if (giu_X == 1 && this_X < last_X)
-    {
       picco_X = this_X;
-    }
 
     if (last_osc_X != su_X)
     {
-      n_osc ++;
+      Osc_X ++;
       last_osc_X = su_X;
+    }
+    
+//---------------------------------------------------Y
+    if (this_Y > last_Y + 500)//picco su
+    {
+      su_Y = 1;
+      giu_Y = 0;
+    }
+    else if (this_Y < last_Y - 500)//picco giu
+    {
+      su_Y = 0;
+      giu_Y = 1;
+    }
+
+    if (su_Y == 1 && this_Y > last_Y)
+      PICCO_Y = this_Y;
+      
+     else if (giu_Y == 1 && this_Y < last_Y)
+      picco_Y = this_Y;
+
+    if (last_osc_Y != su_Y)
+    {
+      Osc_Y ++;
+      last_osc_Y = su_Y;
+    }
+
+//---------------------------------------------------Z
+    if (this_Z > last_Z + 500)//picco su
+    {
+      su_Z = 1;
+      giu_Z = 0;
+    }
+    else if (this_Z < last_Z - 500)//picco giu
+    {
+      su_Z = 0;
+      giu_Z = 1;
+    }
+
+    if (su_Z == 1 && this_Z > last_Z)
+      PICCO_Z = this_Z;
+      
+     else if (giu_Z == 1 && this_Z < last_Z)
+      picco_Z = this_Z;
+
+    if (last_osc_Z != su_Z)
+    {
+      Osc_Z ++;
+      last_osc_Z = su_Z;
     }
 
     last_X = this_X;
+    last_Y = this_Y;
+    last_Z = this_Z;
 }
 
 void Print()
@@ -218,7 +269,7 @@ void Print()
   Serial.print("\t");
   Serial.print(picco_X);
   Serial.print("\t");
-  Serial.println(freq);
+  Serial.println(freq_X);
   /*Serial.print("\t");
   Serial.print(cont);
   Serial.print("\t");
