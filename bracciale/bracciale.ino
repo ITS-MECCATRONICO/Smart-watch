@@ -8,8 +8,9 @@
 #include "BluefruitConfig.h"
 
 #include <Wire.h>
+#include <I2C.h>
 #include <Adafruit_Sensor.h>
-#include <Adafruit_MMA8451.h>
+#include <MMA8451_n0m1.h>
 #include <Adafruit_TMP006.h>
 
 #define FACTORYRESET_ENABLE         0
@@ -25,22 +26,37 @@ PulseSensorPlayground pulseSensor;
 unsigned long lastTime;
 unsigned long thisTime;
 
+long tempx, tempy, tempz;//accel
+
 float objt;
 float diet;
 
-int X;
+int Ax_1[30], Ay_1[30], Az_1[30];
+int Ax_2[30], Ay_2[30], Az_2[30];
+int index_1, index_2, cont = 1, cont_1_s;
+int X, Y, Z;
+int PICCO_X, PICCO_Y, PICCO_Z;
+int picco_X, picco_Y, picco_Z;
+int last_X, last_Y, last_Z;
+int last_osc_X, last_osc_Y, last_osc_Z;
+int Osc_X, Osc_Y, Osc_Z;
+int freq_X, freq_Y, freq_Z;
+
+/*int X;
 int Y;
 int Z;
 int acc;
-int temp_acc;
+int temp_acc;*/
 
 int BPM_record;
 //int B = 0;
 
+bool su_X, su_Y, su_Z;//accel
+bool giu_X, giu_Y, giu_Z;//accel
 bool Ble = 0;
 //----------------------------------------------------------------------------------------------------------------------------------------------
-Adafruit_MMA8451 mma = Adafruit_MMA8451();
 Adafruit_TMP006 tmp006;
+MMA8451_n0m1 accel;
 
 SoftwareSerial bluefruitSS = SoftwareSerial(BLUEFRUIT_SWUART_TXD_PIN, BLUEFRUIT_SWUART_RXD_PIN);
 Adafruit_BluefruitLE_UART ble(bluefruitSS, BLUEFRUIT_UART_MODE_PIN, BLUEFRUIT_UART_CTS_PIN, BLUEFRUIT_UART_RTS_PIN);
@@ -49,20 +65,17 @@ void setup() {
 
   Serial.begin(115200);
   Search_TMP006();
-  Search_MMA8451();
+  Setup_MMA8451();
   Setup_PS();
   Setup_BLE();
   lastTime = millis();
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------
 void loop() {
-  
-  Event_MMA8451();
-  acc = X + Y + Z;
-  //Serial.print("ACC ");
-  //Serial.println(acc);
 
   BLE_conn();
+
+  Event_MMA8451();
 
   thisTime = millis();
   if(thisTime - lastTime > 4000)
@@ -86,4 +99,25 @@ void loop() {
 
     Serial.print((char)c);
   }
+}
+
+void Print()
+{
+  Serial.print(X);
+  Serial.print("\t");
+  /*Serial.print(Y);
+  Serial.print("\t");
+  Serial.print(Z);
+  Serial.print("\t");*/
+  Serial.print(su_X);
+  Serial.print("\t");
+  Serial.print(PICCO_X);
+  Serial.print("\t");
+  Serial.print(picco_X);
+  Serial.print("\t");
+  Serial.println(freq_X);
+  /*Serial.print("\t");
+  Serial.print(cont);
+  Serial.print("\t");
+  Serial.println(millis());*/
 }

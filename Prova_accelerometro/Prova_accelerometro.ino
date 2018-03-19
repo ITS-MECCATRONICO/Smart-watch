@@ -61,8 +61,6 @@ void loop()
 
   Picco();
 
-  //frequenza(su_X);
-
   thisTime = millis();
   if(thisTime - lastTime > 4000)
   {
