@@ -9,10 +9,16 @@ void Setup_MMA8451()
 void Event_MMA8451()
 {
   if (index_1 >= 25)
+  {
     Media_1();
+    Print();
+  }
 
   else if (index_2 >= 25)
+  {
     Media_2();
+    Print();
+  }
 
   Picco();
 }

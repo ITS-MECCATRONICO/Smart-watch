@@ -26,8 +26,8 @@ void Event_TMP006(){
 
     if(Ble)
     {
-      ble.print("TEM ");
-      ble.println(diet);
+      Serial.print("TEM ");
+      Serial.println(diet);
     } 
 
     /*Serial.print("Object Temperature: ");

@@ -9,7 +9,7 @@ void Battery()
   // print out the value you read:
   if(Ble)
   {
-    ble.print("BATT ");
-    ble.println(voltage);
+    Serial.print("BATT ");
+    Serial.println(voltage);
   }
 }

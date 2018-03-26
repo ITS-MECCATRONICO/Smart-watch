@@ -12,8 +12,8 @@ void Save_BPM()
 
     if(Ble)
     {
-      ble.print("BPM ");
-      ble.println(BPM_record);
+      Serial.print("BPM ");
+      Serial.println(BPM_record);
     }
     
     //B++;
