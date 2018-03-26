@@ -7,10 +7,8 @@ void Setup_PS()
   pulseSensor.blinkOnPulse(PIN_BLINK);
   pulseSensor.setThreshold(THRESHOLD);
 
-  while(!pulseSensor.begin())
-  {
-    
-  }
+  while(!pulseSensor.begin());
+
   Serial.println("Pulse Sensor setup OK!!");
 }
 

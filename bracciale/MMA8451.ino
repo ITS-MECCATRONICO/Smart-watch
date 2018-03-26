@@ -23,6 +23,51 @@ void Event_MMA8451()
   Picco();
 }
 
+void Take_MMA8451()
+{
+  accel.update();
+
+  if (cont == 1)
+  {
+    Ax_1[index_1] = accel.x();
+    Ay_1[index_1] = accel.y();
+    Az_1[index_1] = accel.z();
+    
+    index_1++;
+
+    if (index_1 == 25)
+      cont = 2;
+  }
+
+  else if (cont == 2)
+  {
+    Ax_2[index_2] = accel.x();
+    Ay_2[index_2] = accel.y();
+    Az_2[index_2] = accel.z();
+    
+    index_2++;
+
+    if (index_2 == 25)
+      cont = 1;
+  }
+
+  if (cont_1_s >= 500)//CONTEGGIO IMPULSI IN UN SECONDO
+  {
+    freq_X = Osc_X;
+    Osc_X = 0;
+
+    freq_Y = Osc_Y;
+    Osc_Y = 0;
+
+    freq_Z = Osc_Z;
+    Osc_Z = 0;
+    
+    cont_1_s = 0;
+  }
+
+  cont_1_s ++;
+}
+
 void Media_1()
 {
     tempx = 0;

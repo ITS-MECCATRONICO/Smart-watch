@@ -58,7 +58,7 @@ void setup() {
   Search_TMP006();
   Setup_MMA8451();
   Setup_PS();
-  Timer_1_Setup();
+  Timer_2_Setup();
   lastTime = millis();
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------
@@ -78,67 +78,17 @@ void loop() {
   {
     Save_BPM();
     //Serial.print("BPM ");
-    //Serial.println(pulseSensor.getBeatsPerMinute());
+    Serial.println(pulseSensor.getBeatsPerMinute());
   }
-
 }
-
-ISR(TIMER1_OVF_vect)
-{
-  cli();
-
-  accel.update();
-
-  if (cont == 1)
-  {
-    Ax_1[index_1] = accel.x();
-    Ay_1[index_1] = accel.y();
-    Az_1[index_1] = accel.z();
-    
-    index_1++;
-
-    if (index_1 == 25)
-      cont = 2;
-  }
-
-  else if (cont == 2)
-  {
-    Ax_2[index_2] = accel.x();
-    Ay_2[index_2] = accel.y();
-    Az_2[index_2] = accel.z();
-    
-    index_2++;
-
-    if (index_2 == 25)
-      cont = 1;
-  }
-
-  if (cont_1_s >= 500)//CONTEGGIO IMPULSI IN UN SECONDO
-  {
-    freq_X = Osc_X;
-    Osc_X = 0;
-
-    freq_Y = Osc_Y;
-    Osc_Y = 0;
-
-    freq_Z = Osc_Z;
-    Osc_Z = 0;
-    
-    cont_1_s = 0;
-  }
-
-  cont_1_s ++;
-  
-  sei();
-}// end int_1
 
 void Print()
 {
-  Serial.print(X);
-  Serial.print("\t");
-  Serial.print(Y);
-  Serial.print("\t");
-  Serial.println(Z);
+  //Serial.print(X);
+  //Serial.print("\t");
+  //Serial.print(Y);
+  //Serial.print("\t");
+  //Serial.println(Z);
   //Serial.print("\t");
   //Serial.print(su_X);
   //Serial.print("\t");
@@ -151,16 +101,5 @@ void Print()
   Serial.print(cont);
   Serial.print("\t");
   Serial.println(millis());*/
-}
-
-void Timer_1_Setup() //ISR(TIMER1_OVF_vect)
-{
-  // Initializes Timer1 to throw an interrupt every 2mS.
-  TCCR1A = 0x00; // DISABLE OUTPUTS AND PWM ON DIGITAL PINS 9 & 10
-  TCCR1B = 0x11; // GO INTO 'PHASE AND FREQUENCY CORRECT' MODE, NO PRESCALER
-  TCCR1C = 0x00; // DON'T FORCE COMPARE
-  TIMSK1 = 0x01; // ENABLE OVERFLOW INTERRUPT (TOIE1)
-  ICR1 = 8000;  // TRIGGER TIMER INTERRUPT EVERY 2mS
-  sei();         // MAKE SURE GLOBAL INTERRUPTS ARE ENABLED
 }
 

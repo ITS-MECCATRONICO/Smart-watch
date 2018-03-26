@@ -16,6 +16,9 @@ void Save_BPM()
       Serial.println(BPM_record);
     }
     
+    Serial.print("BPM ");
+    Serial.println(BPM_record);
+    
     //B++;
     q = 0;
     BPM_temp = 0;
