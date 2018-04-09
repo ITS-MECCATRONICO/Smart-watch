@@ -11,13 +11,13 @@ void Event_MMA8451()
   if (index_1 >= 25)
   {
     Media_1();
-    Print();
+    //Print();
   }
 
   else if (index_2 >= 25)
   {
     Media_2();
-    Print();
+    //Print();
   }
 
   Picco();
@@ -63,6 +63,7 @@ void Take_MMA8451()
     Osc_Z = 0;
     
     cont_1_s = 0;
+    Print();
   }
 
   cont_1_s ++;

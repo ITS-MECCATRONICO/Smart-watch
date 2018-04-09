@@ -95,8 +95,11 @@ void Print()
   //Serial.print(PICCO_X);
   //Serial.print("\t");
   //Serial.print(picco_X);
-  //Serial.print("\t");
-  //Serial.println(freq_X);
+  Serial.print(freq_X);
+  Serial.print("\t");
+  Serial.print(freq_Y);
+  Serial.print("\t");
+  Serial.println(freq_Z);
   /*Serial.print("\t");
   Serial.print(cont);
   Serial.print("\t");

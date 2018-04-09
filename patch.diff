@@ -1,0 +1,79 @@
+From 464767fac23cff6bc7cb01de32084b93b18739ae Mon Sep 17 00:00:00 2001
+From: "LENOVO-MIIX-510\\enri1" <enricomenegatti13@gmail.com>
+Date: Mon, 9 Apr 2018 15:46:23 +0200
+Subject: [PATCH] buypass calcolo bpm. da vedere in futuro
+
+---
+ bracciale/Dati.ino      |  4 ++--
+ bracciale/bracciale.ino | 14 +++++++-------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/bracciale/Dati.ino b/bracciale/Dati.ino
+index 69cfe10..3c903ac 100644
+--- a/bracciale/Dati.ino
++++ b/bracciale/Dati.ino
+@@ -4,7 +4,7 @@ int BPM_temp;
+ void Save_BPM()
+ {
+ 
+-  BPM_temp = BPM_temp + pulseSensor.getBeatsPerMinute();
++  /*BPM_temp = BPM_temp + pulseSensor.getBeatsPerMinute();
+   q++;
+ 
+   if(q == 20){
+@@ -22,5 +22,5 @@ void Save_BPM()
+     //B++;
+     q = 0;
+     BPM_temp = 0;
+-  }
++  }*/
+ }
+diff --git a/bracciale/bracciale.ino b/bracciale/bracciale.ino
+index 98774d6..2c08bca 100644
+--- a/bracciale/bracciale.ino
++++ b/bracciale/bracciale.ino
+@@ -1,5 +1,5 @@
+-#define USE_ARDUINO_INTERRUPTS true
+-#include <PulseSensorPlayground.h>
++//#define USE_ARDUINO_INTERRUPTS true
++//#include <PulseSensorPlayground.h>
+ #include <SPI.h>
+ #include <SoftwareSerial.h>
+ 
+@@ -14,7 +14,7 @@
+ const int PIN_INPUT = A0;
+ const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
+ const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
+-PulseSensorPlayground pulseSensor;
++//PulseSensorPlayground pulseSensor;
+ 
+ unsigned long lastTime;
+ unsigned long thisTime;
+@@ -57,7 +57,7 @@ void setup() {
+   Serial.begin(115200);
+   Search_TMP006();
+   Setup_MMA8451();
+-  Setup_PS();
++  //Setup_PS();
+   Timer_2_Setup();
+   lastTime = millis();
+ }
+@@ -74,12 +74,12 @@ void loop() {
+       Battery();
+   }
+ 
+-  if (pulseSensor.sawStartOfBeat())
++  /*if (pulseSensor.sawStartOfBeat())
+   {
+     Save_BPM();
+-    //Serial.print("BPM ");
++    Serial.print("BPM ");
+     Serial.println(pulseSensor.getBeatsPerMinute());
+-  }
++  }*/
+ }
+ 
+ void Print()
+-- 
+2.15.1.windows.2
+
