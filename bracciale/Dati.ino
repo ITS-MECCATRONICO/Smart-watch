@@ -4,7 +4,7 @@ int BPM_temp;
 void Save_BPM()
 {
 
-  BPM_temp = BPM_temp + pulseSensor.getBeatsPerMinute();
+  /*BPM_temp = BPM_temp + pulseSensor.getBeatsPerMinute();
   q++;
 
   if(q == 20){
@@ -22,5 +22,5 @@ void Save_BPM()
     //B++;
     q = 0;
     BPM_temp = 0;
-  }
+  }*/
 }

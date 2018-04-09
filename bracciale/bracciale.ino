@@ -1,5 +1,5 @@
-#define USE_ARDUINO_INTERRUPTS true
-#include <PulseSensorPlayground.h>
+//#define USE_ARDUINO_INTERRUPTS true
+//#include <PulseSensorPlayground.h>
 #include <SPI.h>
 #include <SoftwareSerial.h>
 
@@ -14,7 +14,7 @@
 const int PIN_INPUT = A0;
 const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
 const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
-PulseSensorPlayground pulseSensor;
+//PulseSensorPlayground pulseSensor;
 
 unsigned long lastTime;
 unsigned long thisTime;
@@ -57,7 +57,7 @@ void setup() {
   Serial.begin(115200);
   Search_TMP006();
   Setup_MMA8451();
-  Setup_PS();
+  //Setup_PS();
   Timer_2_Setup();
   lastTime = millis();
 }
@@ -74,12 +74,12 @@ void loop() {
       Battery();
   }
 
-  if (pulseSensor.sawStartOfBeat())
+  /*if (pulseSensor.sawStartOfBeat())
   {
     Save_BPM();
-    //Serial.print("BPM ");
+    Serial.print("BPM ");
     Serial.println(pulseSensor.getBeatsPerMinute());
-  }
+  }*/
 }
 
 void Print()
