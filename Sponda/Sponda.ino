@@ -14,7 +14,7 @@ int FC_DW_SX = 11;//NA GND
 int FC_UP_DX = 12;//NA GND
 int FC_DW_DX = 13;//NA GND
 
-bool lampeggia, led_state = 0, alza_sponda = 0, commuta_AB = 0;
+bool lampeggia, led_state = 0, alza_sponda = 0, abbassa_sponda = 0, commuta_AB;
 
 
 long this_time, last_time;
@@ -39,7 +39,7 @@ void setup()
   pinMode(FC_UP_SX, INPUT_PULLUP);
   
   attachInterrupt(digitalPinToInterrupt(EMERGENZA), Emergenza, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(SU), Alza, LOW);
+  attachInterrupt(digitalPinToInterrupt(GIU), Abbassa, LOW);
 
   this_time = millis();
 }
@@ -57,17 +57,55 @@ void loop()
     digitalWrite(R_LED, led_state);
   }
 
+//---------------------------abbassa sponda-------------------------------------
+  if (abbassa_sponda == 1) 
+  {
+    if (commuta_AB == 1)
+    {
+      delay (50);
+      digitalWrite(R_A, HIGH);
+      digitalWrite(R_B, HIGH);
+
+      commuta_AB = 0;
+    }
+    
+    delay (50);
+
+    while(GIU == 0 && FC_DW_SX == 0 && FC_DW_DX == 0)//finchè premuto e no finecorsa
+    {
+      digitalWrite(R_C, HIGH);
+      digitalWrite(R_LED, HIGH);
+    }
+
+    digitalWrite(R_C, LOW);
+    digitalWrite(R_LED, LOW);
+    abbassa_sponda = 0;
+  }
+
+//------------------------------alza sponda-------------------------------------
+  Alza();
   if (alza_sponda == 1)
   {
-    delay (50);
-    digitalWrite(R_A, LOW);
-    digitalWrite(R_B, LOW);
+    if (commuta_AB == 1)
+    {
+      delay (50);
+      digitalWrite(R_A, LOW);
+      digitalWrite(R_B, LOW);
+
+      commuta_AB = 0;
+    }
+    
     delay (50);
 
     while(SU == 0 && FC_UP_SX == 0 && FC_UP_DX == 0)//finchè premuto e no finecorsa
     {
       digitalWrite(R_C, HIGH);
+      digitalWrite(R_LED, HIGH);
     }
+
+    digitalWrite(R_C, LOW);
+    digitalWrite(R_LED, LOW);
+    alza_sponda = 0;
   }
 }
 
@@ -90,7 +128,23 @@ void Emergenza()
   }
 }
 
-//--------------------------routine di interrupt alza sponda-----------------------
+//--------------------------routine di interrupt abbassa sponda-----------------------
+void Abbassa()
+{
+  if (GIU == 0 && FC_DW_SX == 0 && FC_DW_DX == 0)//se si può abbassare
+  {
+    digitalWrite(R_C, LOW);
+
+    if (R_A == 0 || R_B == 0)
+    {
+      commuta_AB = 1;
+    }
+    
+    abbassa_sponda = 1;
+  }
+}
+
+//--------------------------routine alza sponda-----------------------
 void Alza()
 {
   if (SU == 0 && FC_UP_SX == 0 && FC_UP_DX == 0)//se si può alzare
