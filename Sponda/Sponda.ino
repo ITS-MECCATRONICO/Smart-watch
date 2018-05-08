@@ -15,7 +15,7 @@ int FC_UP_DX = 12;//NA GND
 int FC_DW_DX = 13;//NA GND
 
 bool lampeggia, led_state = 0, alza_sponda = 0, abbassa_sponda = 0, commuta_AB;
-bool su, giu, fc_up_sx, fc_dw_sx, fc_up_dx, fc_dw_dx;
+bool su, giu, fc_up_sx, fc_dw_sx, fc_up_dx, fc_dw_dx, emergenza;
 
 int This_ing, Last_ing;
 
@@ -43,25 +43,20 @@ void setup()
   //attachInterrupt(digitalPinToInterrupt(EMERGENZA), Emergenza, CHANGE);
   //attachInterrupt(digitalPinToInterrupt(GIU), Abbassa, LOW);
 
-  this_time = millis();
-
-  digitalWrite(R_LED, LOW);
-  digitalWrite(R_A, LOW);
-  digitalWrite(R_B, LOW);
-  digitalWrite(R_C, LOW);
-  digitalWrite(R_D, LOW);
+  last_time = millis();
 }
 
 void loop() 
-{
+{ 
   su = digitalRead(SU);
   giu = digitalRead(GIU);
   fc_up_sx = digitalRead(FC_UP_SX);
   fc_dw_sx = digitalRead(FC_DW_SX);
   fc_up_dx = digitalRead(FC_UP_DX);
   fc_dw_dx = digitalRead(FC_DW_DX);
+  emergenza = digitalRead(EMERGENZA);
   
-  This_ing = (su + (10 * giu) + (100 * fc_up_sx) + (1000 * fc_dw_sx) + (10000 * fc_up_dx) + (100000 * fc_dw_dx)); 
+  This_ing = (su + (10 * giu) + (100 * fc_up_sx) + (1000 * fc_dw_sx) + (10000 * fc_up_dx) + (100000 * fc_dw_dx) + (1000000 * emergenza)); 
 
   if (This_ing != Last_ing)
   {
@@ -69,34 +64,46 @@ void loop()
     Last_ing = This_ing;
   }
 
+  Emergenza();
   //digitalWrite(R_LED, digitalRead(SU));
   
 //--------------------------lampeggia led se emergenza-------------------------
+  this_time = millis();
+  
   if (lampeggia == 1)
   {
-    if (this_time - last_time >= 2000)
+    if (this_time - last_time > 500)
     {
-      led_state != led_state;
-      last_time = this_time;
-    }
-    digitalWrite(R_LED, led_state);
+      if (led_state == 0)
+      {
+        led_state = 1;
+      }
+      else
+      {
+        led_state = 0;
+      }
+      
+      digitalWrite(R_LED, led_state);
+      last_time = millis();
+    } 
   }
 
 //---------------------------abbassa sponda-------------------------------------
+  Abbassa();
   if (abbassa_sponda == 1) 
   {
     if (commuta_AB == 1)
     {
       delay (50);
-      digitalWrite(R_A, HIGH);
-      digitalWrite(R_B, HIGH);
+      digitalWrite(R_A, LOW);
+      digitalWrite(R_B, LOW);
 
       commuta_AB = 0;
     }
     
     delay (50);
 
-    while(giu == 0 && fc_dw_sx == 0 && fc_dw_dx == 0)//finchè premuto e no finecorsa
+    while(digitalRead(GIU) == 0 && digitalRead(FC_DW_SX) == 1 && digitalRead(FC_DW_DX) == 1)//finchè premuto e no finecorsa
     {
       digitalWrite(R_C, HIGH);
       digitalWrite(R_LED, HIGH);
@@ -111,18 +118,19 @@ void loop()
   Alza();
   if (alza_sponda == 1)
   {
+    Serial.println("ALZO");
     if (commuta_AB == 1)
     {
       delay (50);
-      digitalWrite(R_A, LOW);
-      digitalWrite(R_B, LOW);
+      digitalWrite(R_A, HIGH);
+      digitalWrite(R_B, HIGH);
 
       commuta_AB = 0;
     }
     
     delay (50);
 
-    while(su == 0 && fc_up_sx == 0 && fc_up_dx == 0)//finchè premuto e no finecorsa
+    while(digitalRead(SU) == 0 && digitalRead(FC_UP_SX) == 1 && digitalRead(FC_UP_DX) == 1)//finchè premuto e no finecorsa
     {
       digitalWrite(R_C, HIGH);
       digitalWrite(R_LED, HIGH);
@@ -139,18 +147,17 @@ void loop()
 //--------------------------routine di interrupt emergenza-------------------------
 void Emergenza()
 {
-  if (digitalRead(EMERGENZA) == 1)
+  if (digitalRead(EMERGENZA) == 0)
   {
-    digitalWrite(R_C, LOW);
     digitalWrite(R_D, LOW);
+    digitalWrite(R_C, LOW);
   
     lampeggia = 1;
   }
   else
-  {
-    digitalWrite(R_D, HIGH);
-    
+  { 
     lampeggia = 0;
+    digitalWrite(R_D, HIGH);
     digitalWrite(R_LED, LOW);
   }
 }
@@ -158,15 +165,11 @@ void Emergenza()
 //--------------------------routine di interrupt abbassa sponda-----------------------
 void Abbassa()
 {
-  giu = digitalRead(GIU);
-  fc_dw_sx = digitalRead(FC_DW_SX);
-  fc_dw_dx = digitalRead(FC_DW_DX);
-  
-  if (giu == 0 && fc_dw_sx == 0 && fc_dw_dx == 0)//se si può abbassare
+  if (digitalRead(GIU) == 0 && digitalRead(FC_DW_SX) == 1 && digitalRead(FC_DW_DX) == 1)//se si può abbassare
   {
     digitalWrite(R_C, LOW);
 
-    if (R_A == 0 || R_B == 0)
+    if (digitalRead(R_A) == 1 || digitalRead(R_B) == 1)
     {
       commuta_AB = 1;
     }
@@ -178,15 +181,11 @@ void Abbassa()
 //--------------------------routine alza sponda-----------------------
 void Alza()
 {
-  su = digitalRead(SU);
-  fc_up_sx = digitalRead(FC_UP_SX);
-  fc_up_dx = digitalRead(FC_UP_DX);
-  
-  if (su == 0 && fc_up_sx == 0 && fc_up_dx == 0)//se si può alzare
+  if (digitalRead(SU) == 0 && digitalRead(FC_UP_SX) == 1 && digitalRead(FC_UP_DX) == 1)//se si può alzare
   {
     digitalWrite(R_C, LOW);
 
-    if (R_A == 1 || R_B == 1)
+    if (digitalRead(R_A) == 0 || digitalRead(R_B) == 0)
     {
       commuta_AB = 1;
     }
@@ -209,6 +208,8 @@ void Print()
   Serial.println(fc_up_dx);
   Serial.print("fc_dw_dx");
   Serial.println(fc_dw_dx);
+  Serial.print("emergenza");
+  Serial.println(emergenza);
   Serial.println("---------------------------------------------------------");
 }
 
