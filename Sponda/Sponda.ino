@@ -43,6 +43,8 @@ void setup()
   //attachInterrupt(digitalPinToInterrupt(EMERGENZA), Emergenza, CHANGE);
   //attachInterrupt(digitalPinToInterrupt(GIU), Abbassa, LOW);
 
+  interrupt_setup();
+  
   last_time = millis();
 }
 
@@ -64,8 +66,7 @@ void loop()
     Last_ing = This_ing;
   }
 
-  Emergenza();
-  //digitalWrite(R_LED, digitalRead(SU));
+  //Emergenza();
   
 //--------------------------lampeggia led se emergenza-------------------------
   this_time = millis();
@@ -89,7 +90,7 @@ void loop()
   }
 
 //---------------------------abbassa sponda-------------------------------------
-  Abbassa();
+  //Abbassa();
   if (abbassa_sponda == 1) 
   {
     if (commuta_AB == 1)
@@ -118,7 +119,6 @@ void loop()
   Alza();
   if (alza_sponda == 1)
   {
-    Serial.println("ALZO");
     if (commuta_AB == 1)
     {
       delay (50);
@@ -147,35 +147,13 @@ void loop()
 //--------------------------routine di interrupt emergenza-------------------------
 void Emergenza()
 {
-  if (digitalRead(EMERGENZA) == 0)
-  {
-    digitalWrite(R_D, LOW);
-    digitalWrite(R_C, LOW);
   
-    lampeggia = 1;
-  }
-  else
-  { 
-    lampeggia = 0;
-    digitalWrite(R_D, HIGH);
-    digitalWrite(R_LED, LOW);
-  }
 }
 
 //--------------------------routine di interrupt abbassa sponda-----------------------
 void Abbassa()
 {
-  if (digitalRead(GIU) == 0 && digitalRead(FC_DW_SX) == 1 && digitalRead(FC_DW_DX) == 1)//se si può abbassare
-  {
-    digitalWrite(R_C, LOW);
-
-    if (digitalRead(R_A) == 1 || digitalRead(R_B) == 1)
-    {
-      commuta_AB = 1;
-    }
-    
-    abbassa_sponda = 1;
-  }
+  
 }
 
 //--------------------------routine alza sponda-----------------------
