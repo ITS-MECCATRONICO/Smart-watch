@@ -19,7 +19,7 @@ bool su, giu, fc_up_sx, fc_dw_sx, fc_up_dx, fc_dw_dx, emergenza;
 
 int This_ing, Last_ing;
 
-long this_time, last_time;
+long this_time, last_time, delay_alza, delay_abbassa;
 
 void setup() 
 {
@@ -48,7 +48,6 @@ void setup()
   //interrupt_setup();
   
   last_time = millis();
-  digitalWrite(R_D, HIGH);
 }
 
 void loop() 
@@ -112,12 +111,13 @@ void loop()
     {
       digitalWrite(R_C, HIGH);
       digitalWrite(R_LED, HIGH);
-      delay(5);//delay anti-rimbalzo ingresso
+      delay(6);//delay anti-rimbalzo ingresso
     }
 
     digitalWrite(R_C, LOW);
     digitalWrite(R_LED, LOW);
     abbassa_sponda = 0;
+    delay_abbassa = millis() + 10000;//timer per evitare invesione anticipata
   }
 
 //------------------------------alza sponda-------------------------------------
@@ -140,18 +140,19 @@ void loop()
     {
       digitalWrite(R_C, HIGH);
       digitalWrite(R_LED, HIGH);
-      delay(5);//delay anti-rimbalzo ingresso
+      delay(6);//delay anti-rimbalzo ingresso
     }
 
     digitalWrite(R_C, LOW);
     digitalWrite(R_LED, LOW);
     alza_sponda = 0;
+    delay_alza = millis() + 10000;//timer per evitare invesione anticipata
   }
 }
 
 //---------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
-//--------------------------routine di interrupt emergenza-------------------------
+//-----------------------------routine di emergenza--------------------------------
 void Emergenza()
 {
   if (digitalRead(EMERGENZA) == 0)
@@ -175,37 +176,43 @@ void Emergenza()
   
 }
 
-//--------------------------routine di interrupt abbassa sponda-----------------------
+//--------------------------routine abbassa sponda-----------------------
 void Abbassa()
 {
-  if (digitalRead(GIU) == 0 && digitalRead(FC_DW_SX) == 1 && digitalRead(FC_DW_DX) == 1)//se si può abbassare
+  if (digitalRead(EMERGENZA) == 1 && digitalRead(GIU) == 0 && digitalRead(FC_DW_SX) == 1 && digitalRead(FC_DW_DX) == 1)//se si può abbassare
   {
-    Serial.print("ABBASSA");
-    
-    digitalWrite(R_C, LOW);
-
-    if (digitalRead(R_A) == 1 || digitalRead(R_B) == 1)
+    if (millis() > delay_alza)//timer per evitare invesione anticipata
     {
-      commuta_AB = 1;
-    }
-    abbassa_sponda = 1;
+      Serial.print("ABBASSA");
+    
+      digitalWrite(R_C, LOW);
+  
+      if (digitalRead(R_A) == 1 || digitalRead(R_B) == 1)
+      {
+        commuta_AB = 1;
+      }
+      abbassa_sponda = 1;
+    } 
   }
 }
 
 //--------------------------routine alza sponda-----------------------
 void Alza()
 { 
-  if (digitalRead(SU) == 0 && digitalRead(FC_UP_SX) == 1 && digitalRead(FC_UP_DX) == 1)//se si può alzare
+  if (digitalRead(EMERGENZA) == 1 && digitalRead(SU) == 0 && digitalRead(FC_UP_SX) == 1 && digitalRead(FC_UP_DX) == 1)//se si può alzare
   {
-    Serial.print("ALZA");
-    
-    digitalWrite(R_C, LOW);
-
-    if (digitalRead(R_A) == 0 || digitalRead(R_B) == 0)
+    if (millis() > delay_abbassa)//timer per evitare invesione anticipata
     {
-      commuta_AB = 1;
-    }
-    alza_sponda = 1;
+      Serial.print("ALZA");
+    
+      digitalWrite(R_C, LOW);
+  
+      if (digitalRead(R_A) == 0 || digitalRead(R_B) == 0)
+      {
+        commuta_AB = 1;
+      }
+      alza_sponda = 1;
+    } 
   }
 }
 
