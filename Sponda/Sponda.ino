@@ -24,6 +24,8 @@ long this_time, last_time;
 void setup() 
 {
   Serial.begin(9600);
+
+  Serial.print("Start setup");
 //-------------------Relè---------------------------
   pinMode(R_A, OUTPUT);
   pinMode(R_B, OUTPUT);
@@ -40,12 +42,13 @@ void setup()
   pinMode(FC_UP_DX, INPUT_PULLUP);
   pinMode(FC_DW_DX, INPUT_PULLUP);
   
-  //attachInterrupt(digitalPinToInterrupt(EMERGENZA), Emergenza, CHANGE);
+  //attachInterrupt(digitalPinToInterrupt(EMERGENZA), Emergenza, FALLEN);
   //attachInterrupt(digitalPinToInterrupt(GIU), Abbassa, LOW);
 
-  interrupt_setup();
+  //interrupt_setup();
   
   last_time = millis();
+  digitalWrite(R_D, HIGH);
 }
 
 void loop() 
@@ -66,7 +69,7 @@ void loop()
     Last_ing = This_ing;
   }
 
-  //Emergenza();
+  Emergenza();
   
 //--------------------------lampeggia led se emergenza-------------------------
   this_time = millis();
@@ -90,7 +93,8 @@ void loop()
   }
 
 //---------------------------abbassa sponda-------------------------------------
-  //Abbassa();
+  Abbassa();
+  Emergenza();
   if (abbassa_sponda == 1) 
   {
     if (commuta_AB == 1)
@@ -104,10 +108,11 @@ void loop()
     
     delay (50);
 
-    while(digitalRead(GIU) == 0 && digitalRead(FC_DW_SX) == 1 && digitalRead(FC_DW_DX) == 1)//finchè premuto e no finecorsa
+    while(digitalRead(EMERGENZA) == 1 && digitalRead(GIU) == 0 && digitalRead(R_A) == 0 && digitalRead(R_B) == 0 && digitalRead(FC_DW_SX) == 1 && digitalRead(FC_DW_DX) == 1)//finchè premuto e no finecorsa
     {
       digitalWrite(R_C, HIGH);
       digitalWrite(R_LED, HIGH);
+      delay(5);//delay anti-rimbalzo ingresso
     }
 
     digitalWrite(R_C, LOW);
@@ -117,6 +122,7 @@ void loop()
 
 //------------------------------alza sponda-------------------------------------
   Alza();
+  Emergenza();
   if (alza_sponda == 1)
   {
     if (commuta_AB == 1)
@@ -130,10 +136,11 @@ void loop()
     
     delay (50);
 
-    while(digitalRead(SU) == 0 && digitalRead(FC_UP_SX) == 1 && digitalRead(FC_UP_DX) == 1)//finchè premuto e no finecorsa
+    while(digitalRead(EMERGENZA) == 1 && digitalRead(SU) == 0 && digitalRead(R_A) == 1 && digitalRead(R_B) == 1 && digitalRead(FC_UP_SX) == 1 && digitalRead(FC_UP_DX) == 1)//finchè premuto e no finecorsa
     {
       digitalWrite(R_C, HIGH);
       digitalWrite(R_LED, HIGH);
+      delay(5);//delay anti-rimbalzo ingresso
     }
 
     digitalWrite(R_C, LOW);
@@ -147,20 +154,51 @@ void loop()
 //--------------------------routine di interrupt emergenza-------------------------
 void Emergenza()
 {
+  if (digitalRead(EMERGENZA) == 0)
+  {
+    Serial.print("interrupt emergenza LOW");
+
+    digitalWrite(R_D, LOW);
+    digitalWrite(R_C, LOW);
+  
+    lampeggia = 1;
+  }
+  else
+  { 
+    lampeggia = 0;
+
+    //Serial.print("interrupt emergenza HIGH");
+    
+    digitalWrite(R_D, HIGH);
+    digitalWrite(R_LED, LOW);
+  }
   
 }
 
 //--------------------------routine di interrupt abbassa sponda-----------------------
 void Abbassa()
 {
-  
+  if (digitalRead(GIU) == 0 && digitalRead(FC_DW_SX) == 1 && digitalRead(FC_DW_DX) == 1)//se si può abbassare
+  {
+    Serial.print("ABBASSA");
+    
+    digitalWrite(R_C, LOW);
+
+    if (digitalRead(R_A) == 1 || digitalRead(R_B) == 1)
+    {
+      commuta_AB = 1;
+    }
+    abbassa_sponda = 1;
+  }
 }
 
 //--------------------------routine alza sponda-----------------------
 void Alza()
-{
+{ 
   if (digitalRead(SU) == 0 && digitalRead(FC_UP_SX) == 1 && digitalRead(FC_UP_DX) == 1)//se si può alzare
   {
+    Serial.print("ALZA");
+    
     digitalWrite(R_C, LOW);
 
     if (digitalRead(R_A) == 0 || digitalRead(R_B) == 0)
