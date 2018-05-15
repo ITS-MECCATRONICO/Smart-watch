@@ -63,7 +63,7 @@ void Take_MMA8451()
     Osc_Z = 0;
     
     cont_1_s = 0;
-    Print();
+    //Print();
   }
 
   cont_1_s ++;

@@ -3,6 +3,7 @@ ISR(TIMER2_COMPA_vect)
 {
   cli();
 
+  //Serial.println("ACCELEROMETRO");
   Take_MMA8451();
   
   sei();

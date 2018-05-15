@@ -147,6 +147,8 @@ void loop()
     digitalWrite(R_LED, LOW);
     abbassa_sponda = 0;
     delay_abbassa = millis() + 10000;//timer per evitare invesione anticipata
+
+    sei();
   }
 
 //------------------------------alza sponda-------------------------------------
@@ -176,6 +178,8 @@ void loop()
     digitalWrite(R_LED, LOW);
     alza_sponda = 0;
     delay_alza = millis() + 10000;//timer per evitare invesione anticipata
+
+    sei();
   }
 }
 
@@ -186,7 +190,7 @@ void Emergenza()
 {
   if (digitalRead(EMERGENZA) == 0)
   {
-    Serial.print("interrupt emergenza LOW");
+    Serial.println("Emergenza LOW");
 
     digitalWrite(R_D, LOW);
     digitalWrite(R_C, LOW);
@@ -212,7 +216,8 @@ void Abbassa()
   {
     if (millis() > delay_alza)//timer per evitare invesione anticipata
     {
-      Serial.print("ABBASSA");
+      cli();
+      Serial.println("ABBASSA");
     
       digitalWrite(R_C, LOW);
   
@@ -232,7 +237,8 @@ void Alza()
   {
     if (millis() > delay_abbassa)//timer per evitare invesione anticipata
     {
-      Serial.print("ALZA");
+      cli();
+      Serial.println("ALZA");
     
       digitalWrite(R_C, LOW);
   
