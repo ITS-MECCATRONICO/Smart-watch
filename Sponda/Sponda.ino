@@ -1,3 +1,5 @@
+
+#include <MMA8451_n0m1.h>
 //-------------------Relè---------------------------
 int R_A = 8;
 int R_B = 6;
@@ -14,6 +16,24 @@ int FC_DW_SX = 11;//NA GND
 int FC_UP_DX = 12;//NA GND
 int FC_DW_DX = 13;//NA GND
 
+//-----------------Accelerometro---------------------
+bool su_X, su_Y, su_Z;//accel
+bool giu_X, giu_Y, giu_Z;//accel
+
+int Ax_1[30], Ay_1[30], Az_1[30];
+int Ax_2[30], Ay_2[30], Az_2[30];
+int index_1, index_2, cont = 1, cont_1_s;
+int X, Y, Z;
+int PICCO_X, PICCO_Y, PICCO_Z;
+int picco_X, picco_Y, picco_Z;
+int last_X, last_Y, last_Z;
+int last_osc_X, last_osc_Y, last_osc_Z;
+int Osc_X, Osc_Y, Osc_Z;
+int freq_X, freq_Y, freq_Z;
+
+long tempx, tempy, tempz;
+
+//---------------------Sponda-----------------------
 bool lampeggia, led_state = 0, alza_sponda = 0, abbassa_sponda = 0, commuta_AB;
 bool su, giu, fc_up_sx, fc_dw_sx, fc_up_dx, fc_dw_dx, emergenza;
 
@@ -21,9 +41,13 @@ int This_ing, Last_ing;
 
 long this_time, last_time, delay_alza, delay_abbassa;
 
+//------------------------------------------------------------------------------------
+MMA8451_n0m1 accel;
+
+//------------------------------------------------------------------------------------
 void setup() 
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   Serial.print("Start setup");
 //-------------------Relè---------------------------
@@ -46,6 +70,9 @@ void setup()
   //attachInterrupt(digitalPinToInterrupt(GIU), Abbassa, LOW);
 
   //interrupt_setup();
+
+  Setup_MMA8451();
+  Timer_2_Setup();
   
   last_time = millis();
 }
@@ -67,6 +94,8 @@ void loop()
     Print();
     Last_ing = This_ing;
   }
+
+  Event_MMA8451();
 
   Emergenza();
   
@@ -111,7 +140,7 @@ void loop()
     {
       digitalWrite(R_C, HIGH);
       digitalWrite(R_LED, HIGH);
-      delay(6);//delay anti-rimbalzo ingresso
+      delay(10);//delay anti-rimbalzo ingresso
     }
 
     digitalWrite(R_C, LOW);
@@ -140,7 +169,7 @@ void loop()
     {
       digitalWrite(R_C, HIGH);
       digitalWrite(R_LED, HIGH);
-      delay(6);//delay anti-rimbalzo ingresso
+      delay(10);//delay anti-rimbalzo ingresso
     }
 
     digitalWrite(R_C, LOW);
